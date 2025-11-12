@@ -1,6 +1,7 @@
 import Cl_controlador from "./Cl_controlador.js";
 import Cl_MClinica from "./Cl_mClinica.js";
 import Cl_mPaciente, { iPaciente } from "./Cl_mPaciente.js";
+import Cl_mCita, { iCita } from "./Cl_mCita.js";
 import Cl_vClinica from "./Cl_vClinica.js";
 
 export default class Cl_Index {
@@ -17,6 +18,20 @@ export default class Cl_Index {
           callback: (error: string | false) => {
             // Ignorar errores al cargar desde localStorage
           },
+        });
+      });
+    }
+    let citasLS = localStorage.getItem("citas");
+    if (citasLS) {
+      let citasDT = JSON.parse(citasLS);
+      citasDT.forEach((cita: iCita) => {
+        this.modelo.agregarCita({
+          cedulaPaciente: cita.cedulaPaciente,
+          fecha: cita.fecha,
+          hora: cita.hora,
+          motivo: cita.motivo
+        }, (error: string | false) => {
+          // Ignorar errores al cargar desde localStorage
         });
       });
     }

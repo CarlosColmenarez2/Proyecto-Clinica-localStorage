@@ -4,14 +4,6 @@ export default class Cl_MClinica {
     constructor() {
         this._pacientes = [];
         this._citas = [];
-        const pacientesGuardados = localStorage.getItem("pacientes");
-        const citasGuardadas = localStorage.getItem("citas");
-        if (pacientesGuardados) {
-            this._pacientes = JSON.parse(pacientesGuardados);
-        }
-        if (citasGuardadas) {
-            this._citas = JSON.parse(citasGuardadas);
-        }
     }
     agregarPaciente({ paciente: pacienteData, callback, }) {
         const paciente = new Cl_mPaciente(pacienteData);
@@ -28,6 +20,8 @@ export default class Cl_MClinica {
             return;
         }
         this._pacientes.push(paciente);
+        let pacientesJSON = this._pacientes.map(p => p.toJSON());
+        localStorage.setItem('pacientes', JSON.stringify(pacientesJSON));
         callback(false);
     }
     listar() {
@@ -53,7 +47,8 @@ export default class Cl_MClinica {
         }
         const cita = new Cl_mCita(citaData);
         this._citas.push(cita);
-        localStorage.setItem('citas', JSON.stringify(this._citas));
+        let citasJSON = this._citas.map(c => c.toJSON());
+        localStorage.setItem('citas', JSON.stringify(citasJSON));
         callback(false);
     }
     buscarCitasPorPaciente(cedula) {
@@ -63,6 +58,13 @@ export default class Cl_MClinica {
         return this._citas.filter(c => c.fecha === fecha);
     }
     listarCitas() {
-        return this._citas.map(c => c.toJSON());
+        return this._citas.map(c => {
+            if (c instanceof Cl_mCita) {
+                return c.toJSON();
+            }
+            else {
+                return c;
+            }
+        });
     }
 }

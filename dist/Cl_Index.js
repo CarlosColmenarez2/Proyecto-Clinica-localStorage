@@ -16,6 +16,20 @@ export default class Cl_Index {
                 });
             });
         }
+        let citasLS = localStorage.getItem("citas");
+        if (citasLS) {
+            let citasDT = JSON.parse(citasLS);
+            citasDT.forEach((cita) => {
+                this.modelo.agregarCita({
+                    cedulaPaciente: cita.cedulaPaciente,
+                    fecha: cita.fecha,
+                    hora: cita.hora,
+                    motivo: cita.motivo
+                }, (error) => {
+                    // Ignorar errores al cargar desde localStorage
+                });
+            });
+        }
         this.vista = new Cl_vClinica();
         let controlador = new Cl_controlador(this.modelo, this.vista);
         this.vista.controlador = controlador;

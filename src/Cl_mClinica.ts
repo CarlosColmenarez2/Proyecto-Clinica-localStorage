@@ -4,16 +4,7 @@ import Cl_mCita, {iCita} from "./Cl_mCita.js";
 export default class Cl_MClinica {
     private _pacientes: Cl_mPaciente[] = [];
     private _citas: Cl_mCita[] = [];
-    constructor(){
-        const pacientesGuardados = localStorage.getItem("pacientes");
-        const citasGuardadas = localStorage.getItem("citas");
-        if (pacientesGuardados) {
-            this._pacientes = JSON.parse(pacientesGuardados);
-        }
-        if (citasGuardadas) {
-            this._citas = JSON.parse(citasGuardadas);
-        }
-    }
+    constructor(){}
     agregarPaciente({
         paciente: pacienteData,
         callback,
@@ -35,6 +26,8 @@ export default class Cl_MClinica {
         return;
         }
         this._pacientes.push(paciente);
+        let pacientesJSON = this._pacientes.map(p => p.toJSON());
+        localStorage.setItem('pacientes', JSON.stringify(pacientesJSON));
         callback(false);
     }
     listar(): iPaciente[] {
@@ -62,7 +55,8 @@ export default class Cl_MClinica {
         }
         const cita = new Cl_mCita(citaData);
         this._citas.push(cita);
-        localStorage.setItem('citas', JSON.stringify(this._citas));
+        let citasJSON = this._citas.map(c => c.toJSON());
+        localStorage.setItem('citas', JSON.stringify(citasJSON));
         callback(false);
     }
 
@@ -75,7 +69,13 @@ export default class Cl_MClinica {
     }
 
     listarCitas(): iCita[] {
-        return this._citas.map(c => c.toJSON());
+        return this._citas.map(c => {
+            if (c instanceof Cl_mCita) {
+                return c.toJSON();
+            } else {
+                return c as iCita;
+            }
+        });
     }
 
 
